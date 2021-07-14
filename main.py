@@ -5,9 +5,9 @@ from conference_crawler import ConferenceSpider
 
 def main():
     process = CrawlerProcess(settings={
-        # "FEEDS": {
-        #     "items.json": {"format": "json"},
-        # },
+        "FEEDS": {
+            "mobicom.json": {"format": "json"},
+        },
     })
 
     process.crawl(ConferenceSpider)
