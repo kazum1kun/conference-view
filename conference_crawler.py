@@ -1,14 +1,20 @@
-import scrapy as sp
-
+import os
+import scrapy
+from scrapy_selenium import SeleniumRequest
 
 # For "modern" Mobicom website (2019+) with separated accepted paper page
-class MobicomSpider(sp.Spider):
+class MobicomSpider(scrapy.Spider):
     name = 'mobiconspider'
-    start_urls = [
-        'https://sigmobile.org/mobicom/2021/accepted.html',
-        'https://sigmobile.org/mobicom/2020/accepted.php',
-        'https://sigmobile.org/mobicom/2019/accepted.php',
-    ]
+
+    def start_requests(self):
+        start_urls = [
+            'https://sigmobile.org/mobicom/2021/accepted.html',
+            'https://sigmobile.org/mobicom/2020/accepted.php',
+            'https://sigmobile.org/mobicom/2019/accepted.php',
+        ]
+
+        for url in start_urls:
+            yield SeleniumRequest(url=url, callback=self.parse)
 
     def parse(self, response, **kwargs):
         # Get the year of the conference
@@ -25,8 +31,9 @@ class MobicomSpider(sp.Spider):
 
 
 # For "old" Mobicom the information is more readily accessed in the ACM page on the conference proceedings
-class OldMobicomSpider(sp.Spider):
+class OldMobicomSpider(scrapy.Spider):
     name = 'oldmobiconspider'
+    cwd = os.getcwd()
     start_urls = [
         'file:///C:/Users/kilve/PycharmProjects/ConferenceView/res/mobicom_acm/Proceedings of the 24th Annual International Conference on Mobile Computing and Networking _ ACM Conferences.html',
     ]

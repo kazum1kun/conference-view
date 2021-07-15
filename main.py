@@ -1,17 +1,17 @@
-import scrapy as sp
+from shutil import which
 from scrapy.crawler import CrawlerProcess
-
 from conference_crawler import MobicomSpider, OldMobicomSpider
 
 
 def main():
+
     process = CrawlerProcess(settings={
         "FEEDS": {
-            "mobicom.json": {"format": "json"},
+            "new.json": {"format": "json"},
         },
     })
 
-    process.crawl(OldMobicomSpider)
+    process.crawl(MobicomSpider)
     process.start()
 
 
