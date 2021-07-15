@@ -1,7 +1,8 @@
 import scrapy as sp
 from scrapy.crawler import CrawlerProcess
 
-from conference_crawler import ConferenceSpider
+from conference_crawler import MobicomSpider, OldMobicomSpider
+
 
 def main():
     process = CrawlerProcess(settings={
@@ -10,7 +11,7 @@ def main():
         },
     })
 
-    process.crawl(ConferenceSpider)
+    process.crawl(OldMobicomSpider)
     process.start()
 
 
