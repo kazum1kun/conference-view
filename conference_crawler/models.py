@@ -58,4 +58,5 @@ class Author(DeclarativeBase):
 class AuthorInstitution(DeclarativeBase):
     __tablename__ = 'author_institution'
     id = Column(Integer, primary_key=True)
+    name = Column(String)
     author_id = Column(Integer, ForeignKey('author.id'))

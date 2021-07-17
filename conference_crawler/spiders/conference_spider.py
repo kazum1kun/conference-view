@@ -2,6 +2,8 @@ import os
 import scrapy
 from scrapy_selenium import SeleniumRequest
 
+from conference_crawler.items import *
+
 # For "modern" Mobicom website (2019+) with separated accepted paper page
 class MobicomSpider(scrapy.Spider):
     name = 'mobiconspider'
@@ -40,7 +42,8 @@ class OldMobicomSpider(scrapy.Spider):
 
     def parse(self, response, **kwargs):
         # Get the year of the conference
-        year = response.css('div.coverDate::text').get()
+        conf_year = response.css('div.coverDate::text').get()
+        conf_item = ConferenceItem('test', int(conf_year), [])
 
         # Obtain divs of individual papers
         for paper in response.css('div.issue-item'):
@@ -49,18 +52,18 @@ class OldMobicomSpider(scrapy.Spider):
             if paper_type != 'article' and paper_type != 'research-article':
                 continue
 
-            authors = []
+            paper_title = paper.css('div div h5 a::text').get()
+            paper_item = PaperItem(paper_title, [])
+
             # Obtain the information of author(s)
             for author in paper.css('div div').xpath('./ul[@aria-label="authors"]').css('li'):
-                author_info = {
-                    'name': author.css('a span::text').get(),
-                    'profile_id': author.css('a').xpath('@href').re(r'\d+')[0],
-                }
-                authors.append(author_info)
+                author_name = author.css('a span::text').get()
+                author_acm_id = author.css('a').xpath('@href').re(r'\d+')[0]
 
-            # Get the paper title and authors info
-            yield {
-                'year': year,
-                'title': paper.css('div div h5 a::text').get(),
-                'authors': authors
-            }
+                author_item = AuthorItem(author_name, author_acm_id, [])
+                paper_item.author.append(author_item)
+            conf_item.papers.append(paper_item)
+
+        # Get the paper title and authors info
+        return conf_item
+

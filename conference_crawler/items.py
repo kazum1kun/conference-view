@@ -6,20 +6,20 @@
 from dataclasses import dataclass
 
 
-@dataclass
+@dataclass(frozen=True)
 class AuthorItem:
     name: str
     acm_id: int
     affiliations: list[str]
 
 
-@dataclass
+@dataclass(frozen=True)
 class PaperItem:
-    author: list[AuthorItem]
     title: str
+    author: list[AuthorItem]
 
 
-@dataclass
+@dataclass(frozen=True)
 class ConferenceItem:
     name: str
     year: int
