@@ -5,10 +5,10 @@
 
 
 # useful for handling different item types with a single interface
-from itemadapter import ItemAdapter
 from sqlalchemy.orm import sessionmaker
-from conference_crawler.models import *
+
 from conference_crawler.items import *
+from conference_crawler.models import *
 
 
 class ConferenceCrawlerPipeline:

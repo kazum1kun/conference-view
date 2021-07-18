@@ -1,8 +1,10 @@
 import os
+
 import scrapy
 from scrapy_selenium import SeleniumRequest
 
 from conference_crawler.items import *
+
 
 # For "modern" Mobicom website (2019+) with separated accepted paper page
 class MobicomSpider(scrapy.Spider):
@@ -68,4 +70,3 @@ class OldMobicomSpider(scrapy.Spider):
 
         # Get the paper title and authors info
         return conf_item
-

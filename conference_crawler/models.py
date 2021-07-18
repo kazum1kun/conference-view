@@ -1,9 +1,9 @@
+from scrapy.utils.project import get_project_settings
+from sqlalchemy import (
+    Integer, String)
 from sqlalchemy import create_engine, Column, Table, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-from sqlalchemy import (
-    Integer, SmallInteger, String, Date, DateTime, Float, Boolean, Text, LargeBinary)
-from scrapy.utils.project import get_project_settings
 
 Base = declarative_base()
 
