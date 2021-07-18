@@ -16,7 +16,7 @@ class AuthorItem:
 @dataclass(frozen=True)
 class PaperItem:
     title: str
-    author: list[AuthorItem]
+    authors: list[AuthorItem]
 
 
 @dataclass(frozen=True)

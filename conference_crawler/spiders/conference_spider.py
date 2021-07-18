@@ -58,10 +58,12 @@ class OldMobicomSpider(scrapy.Spider):
             # Obtain the information of author(s)
             for author in paper.css('div div').xpath('./ul[@aria-label="authors"]').css('li'):
                 author_name = author.css('a span::text').get()
+                if author_name is None:
+                    continue
                 author_acm_id = author.css('a').xpath('@href').re(r'\d+')[0]
 
                 author_item = AuthorItem(author_name, author_acm_id, [])
-                paper_item.author.append(author_item)
+                paper_item.authors.append(author_item)
             conf_item.papers.append(paper_item)
 
         # Get the paper title and authors info

@@ -5,7 +5,7 @@ from sqlalchemy import (
     Integer, SmallInteger, String, Date, DateTime, Float, Boolean, Text, LargeBinary)
 from scrapy.utils.project import get_project_settings
 
-DeclarativeBase = declarative_base()
+Base = declarative_base()
 
 
 def db_connect():
@@ -13,49 +13,44 @@ def db_connect():
 
 
 def create_table(engine):
-    DeclarativeBase.metadata.create_all(engine)
+    Base.metadata.create_all(engine)
 
 
-class Conference(DeclarativeBase):
+class Conference(Base):
     __tablename__ = 'conference'
     id = Column(Integer, primary_key=True)
     name = Column(String)
     year = Column(Integer)
-    papers = relationship("Paper")
+    papers = relationship("Paper", backref="conference")
 
 
-paper_author_table = Table('association', DeclarativeBase.metadata,
+paper_author_table = Table('paper_author', Base.metadata,
                            Column('paper_id', Integer, ForeignKey('paper.id')),
                            Column('author_id', Integer, ForeignKey('author.id'))
                            )
 
 
-class Paper(DeclarativeBase):
+class Paper(Base):
     __tablename__ = 'paper'
     id = Column(Integer, primary_key=True)
-    title: Column(String)
+    title = Column(String)
     authors = relationship(
         "Author",
         secondary=paper_author_table,
-        back_populates="papers"
+        backref="papers"
     )
     conference_id = Column(Integer, ForeignKey('conference.id'))
 
 
-class Author(DeclarativeBase):
+class Author(Base):
     __tablename__ = 'author'
     id = Column(Integer, primary_key=True)
     name = Column(String)
     acm_id = Column(Integer)
-    papers = relationship(
-        "Paper",
-        secondary=paper_author_table,
-        back_populates="authors"
-    )
     institutions = relationship("AuthorInstitution")
 
 
-class AuthorInstitution(DeclarativeBase):
+class AuthorInstitution(Base):
     __tablename__ = 'author_institution'
     id = Column(Integer, primary_key=True)
     name = Column(String)

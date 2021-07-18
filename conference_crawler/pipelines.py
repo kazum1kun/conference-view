@@ -21,12 +21,13 @@ class ConferenceCrawlerPipeline:
     # Save the information
     def process_item(self, item: ConferenceItem, spider):
         session = self.Session()
+        session.begin()
 
         conference_db = Conference()
         conference_db.name = item.name
         conference_db.year = item.year
 
-        for paper in conference_db.papers:
+        for paper in item.papers:
             paper_db = Paper()
             paper_db.title = paper.title
 
@@ -35,7 +36,7 @@ class ConferenceCrawlerPipeline:
                 author_db.name = author.name
                 author_db.acm_id = author.acm_id
 
-                for institution in author.institutions:
+                for institution in author.affiliations:
                     author_inst_db = AuthorInstitution()
                     author_inst_db.name = institution
                     author_db.institutions.append(author_inst_db)
