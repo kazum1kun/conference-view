@@ -1,3 +1,4 @@
-scrapy >= 2.5.0
+scrapy
 scrapy-selenium
 SQLAlchemy
+selenium
