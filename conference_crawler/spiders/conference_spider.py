@@ -92,11 +92,10 @@ class MobicomACMSpider(scrapy.Spider):
                     continue
                 author_acm_id = author.css('a').xpath('@href').re(r'\d+')[0]
 
-                author_item = AuthorItem(author_name, author_acm_id, [])
+                author_item = AuthorItem(author_name, author_acm_id)
                 paper_item.authors.append(author_item)
             conf_item.papers.append(paper_item)
 
-        # Get the paper title and authors info
         yield conf_item
 
     # def parse_author_affiliations(self, response):

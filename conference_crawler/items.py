@@ -10,7 +10,6 @@ from dataclasses import dataclass
 class AuthorItem:
     name: str
     acm_id: int
-    affiliations: list[str]
 
 
 @dataclass(frozen=True)
