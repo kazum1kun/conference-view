@@ -10,13 +10,7 @@ from conference_crawler.items import *
 
 # For Mobicom the information is more readily accessed in the ACM page on the conference proceedings
 class MobicomACMSpider(scrapy.Spider):
-    name = 'mobiconacmspider'
-
-    custom_settings = {
-        'SELENIUM_DRIVER_NAME': 'chrome',
-        'SELENIUM_DRIVER_EXECUTABLE_PATH': which('chromedriver'),
-        'SELENIUM_DRIVER_ARGUMENTS': ['-headless']
-    }
+    name = 'mobicomacmspider'
 
     def start_requests(self):
         start_urls = [
@@ -43,7 +37,7 @@ class MobicomACMSpider(scrapy.Spider):
             'https://dl.acm.org/doi/proceedings/10.1145/2789168',  # '15
             'https://dl.acm.org/doi/proceedings/10.1145/2973750',
             'https://dl.acm.org/doi/proceedings/10.1145/3117811',
-            'https://dl.acm.org/doi/proceedings/10.1145/3241539'
+            'https://dl.acm.org/doi/proceedings/10.1145/3241539',
             'https://dl.acm.org/doi/proceedings/10.1145/3300061',
             'https://dl.acm.org/doi/proceedings/10.1145/3372224',  # '20
             'https://dl.acm.org/doi/proceedings/10.1145/3447993',
@@ -78,11 +72,12 @@ class MobicomACMSpider(scrapy.Spider):
         # Obtain divs of individual papers
         for paper in response.css('div.issue-item'):
             # Check if the div contains the type of paper we wanted
-            paper_type = paper.css('div.issue-item__citation div.issue-heading::text').get()
+            paper_type = paper.css('div.issue-item__citation div.issue-heading::text').get().lower()
             if paper_type != 'article' and paper_type != 'research-article':
                 continue
 
-            paper_title = paper.css('div div h5 a::text').get()
+            # Remove whitespace and newline in the title
+            paper_title = ' '.join(paper.css('div div h5 a::text').get().split())
             paper_item = PaperItem(paper_title, [])
 
             # Obtain the information of author(s)

@@ -16,7 +16,8 @@ NEWSPIDER_MODULE = 'conference_crawler.spiders'
 
 SELENIUM_DRIVER_NAME = 'chrome'
 SELENIUM_DRIVER_EXECUTABLE_PATH = which('chromedriver')
-SELENIUM_DRIVER_ARGUMENTS = ['-headless']
+# Window size necessary to make sure additional authors don't get hidden
+SELENIUM_DRIVER_ARGUMENTS = ['-headless', '--window-size=1920,1080']
 
 DOWNLOADER_MIDDLEWARES = {
     'scrapy_selenium.SeleniumMiddleware': 800
