@@ -1,9 +1,7 @@
 import time
-from shutil import which
 
 import scrapy
-from scrapy_selenium import SeleniumRequest
-from selenium.webdriver.chrome.webdriver import WebDriver
+from selenium import webdriver
 
 from conference_crawler.items import *
 
@@ -12,56 +10,64 @@ from conference_crawler.items import *
 class MobicomACMSpider(scrapy.Spider):
     name = 'mobicomacmspider'
 
-    def start_requests(self):
-        start_urls = [
-            'https://dl.acm.org/doi/proceedings/10.1145/215530',  # '95
-            'https://dl.acm.org/doi/proceedings/10.1145/236387',
-            'https://dl.acm.org/doi/proceedings/10.1145/262116',
-            'https://dl.acm.org/doi/proceedings/10.1145/288235',
-            'https://dl.acm.org/doi/proceedings/10.1145/313451',
-            'https://dl.acm.org/doi/proceedings/10.1145/345910',  # '00
-            'https://dl.acm.org/doi/proceedings/10.1145/381677',
-            'https://dl.acm.org/doi/proceedings/10.1145/570645',
-            'https://dl.acm.org/doi/proceedings/10.1145/938985',
-            'https://dl.acm.org/doi/proceedings/10.1145/1023720',
-            'https://dl.acm.org/doi/proceedings/10.1145/1080829',  # '05
-            'https://dl.acm.org/doi/proceedings/10.1145/1161089',
-            'https://dl.acm.org/doi/proceedings/10.1145/1287853',
-            'https://dl.acm.org/doi/proceedings/10.1145/1409944',
-            'https://dl.acm.org/doi/proceedings/10.1145/1614320',
-            'https://dl.acm.org/doi/proceedings/10.1145/1859995',  # '10
-            'https://dl.acm.org/doi/proceedings/10.1145/2030613',
-            'https://dl.acm.org/doi/proceedings/10.1145/2348543',
-            'https://dl.acm.org/doi/proceedings/10.1145/2500423',
-            'https://dl.acm.org/doi/proceedings/10.1145/2639108',
-            'https://dl.acm.org/doi/proceedings/10.1145/2789168',  # '15
-            'https://dl.acm.org/doi/proceedings/10.1145/2973750',
-            'https://dl.acm.org/doi/proceedings/10.1145/3117811',
-            'https://dl.acm.org/doi/proceedings/10.1145/3241539',
-            'https://dl.acm.org/doi/proceedings/10.1145/3300061',
-            'https://dl.acm.org/doi/proceedings/10.1145/3372224',  # '20
-            'https://dl.acm.org/doi/proceedings/10.1145/3447993',
-        ]
+    def __init__(self, **kwargs):
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.headless = True
+        # Window size necessary to make sure additional authors don't get hidden
+        chrome_options.add_argument('--window-size=1920,1080')
+        self.driver = webdriver.Chrome(chrome_options=chrome_options)
+        super().__init__(**kwargs)
 
-        for url in start_urls:
-            yield SeleniumRequest(url=url, callback=self.parse)
+    start_urls = [
+        'https://dl.acm.org/doi/proceedings/10.1145/215530',  # '95
+        'https://dl.acm.org/doi/proceedings/10.1145/236387',
+        'https://dl.acm.org/doi/proceedings/10.1145/262116',
+        'https://dl.acm.org/doi/proceedings/10.1145/288235',
+        'https://dl.acm.org/doi/proceedings/10.1145/313451',
+        'https://dl.acm.org/doi/proceedings/10.1145/345910',  # '00
+        'https://dl.acm.org/doi/proceedings/10.1145/381677',
+        'https://dl.acm.org/doi/proceedings/10.1145/570645',
+        'https://dl.acm.org/doi/proceedings/10.1145/938985',
+        'https://dl.acm.org/doi/proceedings/10.1145/1023720',
+        'https://dl.acm.org/doi/proceedings/10.1145/1080829',  # '05
+        'https://dl.acm.org/doi/proceedings/10.1145/1161089',
+        'https://dl.acm.org/doi/proceedings/10.1145/1287853',
+        'https://dl.acm.org/doi/proceedings/10.1145/1409944',
+        'https://dl.acm.org/doi/proceedings/10.1145/1614320',
+        'https://dl.acm.org/doi/proceedings/10.1145/1859995',  # '10
+        'https://dl.acm.org/doi/proceedings/10.1145/2030613',
+        'https://dl.acm.org/doi/proceedings/10.1145/2348543',
+        'https://dl.acm.org/doi/proceedings/10.1145/2500423',
+        'https://dl.acm.org/doi/proceedings/10.1145/2639108',
+        'https://dl.acm.org/doi/proceedings/10.1145/2789168',  # '15
+        'https://dl.acm.org/doi/proceedings/10.1145/2973750',
+        'https://dl.acm.org/doi/proceedings/10.1145/3117811',
+        'https://dl.acm.org/doi/proceedings/10.1145/3241539',
+        'https://dl.acm.org/doi/proceedings/10.1145/3300061',
+        'https://dl.acm.org/doi/proceedings/10.1145/3372224',  # '20
+        'https://dl.acm.org/doi/proceedings/10.1145/3447993',
+    ]
 
     def parse(self, response, **kwargs):
-        # Obtain the underlying selenium driver so we can further interact with the webpage
-        driver: WebDriver = response.meta['driver']
+        # Use selenium driver to further interact with the page
+        self.driver.get(response.url)
+
         # Obtain the session headers and click on them as these are lazy-loaded
-        session_headers = driver.find_elements_by_css_selector('div.table-of-content div div.accordion div '
-                                                               'div.toc__section a.section__title')
+        session_headers = self.driver.find_elements_by_css_selector('div.table-of-content div div.accordion div '
+                                                                    'div.toc__section a.section__title')
         # No need to click the first header - always loaded on page load
         session_headers = session_headers[1:]
-        for header in session_headers:
-            # We have to use js to emulate a click because click() function doesn't work properly
-            driver.execute_script('arguments[0].click();', header)
 
-        # Wait for 3 secs to make sure lazy-loaded contents are rendered fully
-        time.sleep(3)
-        # Pass the updated webpage back and resume normal processing
-        response = scrapy.Selector(text=driver.page_source)
+        # Workaround for a known bug (https://github.com/clemfromspace/scrapy-selenium/issues/22) where meta driver url
+        # is not in sync with the response url due to the single threaded nature of the selenium driver
+        if session_headers:
+            for header in session_headers:
+                # We have to use js to emulate a click because click() function doesn't work properly
+                self.driver.execute_script('arguments[0].click();', header)
+                # Wait for 3 secs to make sure lazy-loaded contents are rendered fully
+                time.sleep(3)
+                # Pass the updated webpage back and resume normal processing
+                response = scrapy.Selector(text=self.driver.page_source)
 
         # Get the title and the year year of the conference
         # Example title: MobiCom '18: Proceedings of the 24th Annual..., where the first part is used
@@ -71,12 +77,12 @@ class MobicomACMSpider(scrapy.Spider):
 
         # Obtain divs of individual papers
         for paper in response.css('div.issue-item'):
-            # Check if the div contains the type of paper we wanted
+            # Check if the div contains the types of paper we wanted
             paper_type = paper.css('div.issue-item__citation div.issue-heading::text').get().lower()
             if paper_type != 'article' and paper_type != 'research-article':
                 continue
 
-            # Remove whitespace and newline in the title
+            # Remove whitespaces and newline in the title
             paper_title = ' '.join(paper.css('div div h5 a::text').get().split())
             paper_item = PaperItem(paper_title, [])
 

@@ -7,21 +7,11 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 import os
-from shutil import which
 
 BOT_NAME = 'conference_crawler'
 
 SPIDER_MODULES = ['conference_crawler.spiders']
 NEWSPIDER_MODULE = 'conference_crawler.spiders'
-
-SELENIUM_DRIVER_NAME = 'chrome'
-SELENIUM_DRIVER_EXECUTABLE_PATH = which('chromedriver')
-# Window size necessary to make sure additional authors don't get hidden
-SELENIUM_DRIVER_ARGUMENTS = ['-headless', '--window-size=1920,1080']
-
-DOWNLOADER_MIDDLEWARES = {
-    'scrapy_selenium.SeleniumMiddleware': 800
-}
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # USER_AGENT = 'conference_crawler (+http://www.yourdomain.com)'
