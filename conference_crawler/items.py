@@ -10,6 +10,8 @@ from dataclasses import dataclass
 class AuthorItem:
     name: str
     acm_id: int
+    ieee_id: int
+    institutions: list[str]
 
 
 @dataclass(frozen=True)

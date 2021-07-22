@@ -64,10 +64,26 @@ class MobicomACMSpider(scrapy.Spider):
             for header in session_headers:
                 # We have to use js to emulate a click because click() function doesn't work properly
                 self.driver.execute_script('arguments[0].click();', header)
-                # Wait for 3 secs to make sure lazy-loaded contents are rendered fully
-                time.sleep(3)
-                # Pass the updated webpage back and resume normal processing
-                response = scrapy.Selector(text=self.driver.page_source)
+
+        # Some pages have a "Show All" button that must be clicked to show the entire proceeding page
+        show_all = self.driver.find_elements_by_css_selector('button.showAllProceedings')
+        if show_all:
+            see_more_count = len(self.driver.find_elements_by_css_selector('div.see_more'))
+            list_bottom = self.driver.find_elements_by_css_selector('ol.organizational-chart')
+            show_all[0].click()
+            while True:
+                # Some docs requires multiple loads - when additional "see_more" div is present
+                self.driver.execute_script('arguments[0].scrollIntoView(true)', list_bottom[0])
+                new_see_more_count = len(self.driver.find_elements_by_css_selector('div.see_more'))
+                # Scroll to bottom of the list to make sure the list fully loads
+                if new_see_more_count <= see_more_count:
+                    break
+                see_more_count = new_see_more_count
+
+        # Wait for 3 secs to make sure lazy-loaded contents are rendered fully
+        time.sleep(3)
+        # Pass the updated webpage back and resume normal processing
+        response = scrapy.Selector(text=self.driver.page_source)
 
         # Get the title and the year year of the conference
         # Example title: MobiCom '18: Proceedings of the 24th Annual..., where the first part is used
@@ -93,7 +109,7 @@ class MobicomACMSpider(scrapy.Spider):
                     continue
                 author_acm_id = author.css('a').xpath('@href').re(r'\d+')[0]
 
-                author_item = AuthorItem(author_name, author_acm_id)
+                author_item = AuthorItem(author_name, author_acm_id, None, None)
                 paper_item.authors.append(author_item)
             conf_item.papers.append(paper_item)
 

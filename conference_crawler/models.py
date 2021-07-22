@@ -47,6 +47,7 @@ class Author(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
     acm_id = Column(Integer)
+    ieee_id = Column(Integer)
     institutions = relationship("AuthorInstitution")
 
 
