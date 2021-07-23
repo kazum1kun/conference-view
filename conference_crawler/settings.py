@@ -14,7 +14,8 @@ SPIDER_MODULES = ['conference_crawler.spiders']
 NEWSPIDER_MODULE = 'conference_crawler.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-# USER_AGENT = 'conference_crawler (+http://www.yourdomain.com)'
+# Must set or IEEE Xplore will return "unavailable" page
+USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
@@ -88,4 +89,4 @@ ITEM_PIPELINES = {
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 
-CONNECTION_STRING = 'sqlite:///' + os.getcwd() + os.sep + 'db' + os.sep + 'conference.db'
+CONNECTION_STRING = 'sqlite:///' + os.getcwd() + os.sep + 'db' + os.sep + 'conference_acm.db'
