@@ -33,18 +33,16 @@ class ConferenceCrawlerPipeline:
             paper_db.title = paper.title
 
             for author in paper.authors:
+                author_db = None
                 # If the author is already existing, add the paper to the existing entry
                 try:
-                    author_db = session.query(Author).filter_by(name=author.name).one()
-                    # Update author's acm id or ieee id
-                    if author.acm_id and not author_db.acm_id:
-                        author_db.acm_id = author.acm_id
-                    if author.ieee_id and not author_db.ieee_id:
-                        author_db.ieee_id = author.ieee_id
+                    if author.acm_id:
+                        author_db = session.query(Author).filter_by(acm_id=author.acm_id).one()
+                    elif author.ieee_id:
+                        author_db = session.query(Author).filter_by(ieee_id=author.ieee_id).one()
                 except MultipleResultsFound as e:
-                    # TODO: better handle authors with the identical names
-                    print(f'Error: Multiple authors named {author.name} found')
-                    author_db = None
+                    # Impossible given the situation
+                    pass
                 except NoResultFound as e:
                     author_db = Author()
                     author_db.name = author.name

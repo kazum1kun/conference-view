@@ -1,7 +1,6 @@
 from scrapy.crawler import CrawlerProcess
 
-from conference_crawler.spiders.mobicom_acm_spider import MobicomACMSpider
-from conference_crawler.spiders.infocom_ieee_spider import InfocomIeeeSpider
+from conference_crawler.spiders.sigcomm_acm_spider import SigcommACMSpider
 
 
 # Unused, use scrapy crawl xxx instead
@@ -14,7 +13,7 @@ def main():
         # },
     })
 
-    process.crawl(InfocomIeeeSpider)
+    process.crawl(SigcommACMSpider)
     process.start()
 
 

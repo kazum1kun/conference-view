@@ -1,5 +1,4 @@
 import scrapy
-import logging
 from scrapy import Selector
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
@@ -20,7 +19,6 @@ class InfocomIeeeSpider(scrapy.Spider):
         chrome_options.add_argument('--window-size=1920,1080')
         self.driver = webdriver.Chrome(chrome_options=chrome_options)
 
-        logging.basicConfig(filename='ignored_articles.log', level=logging.DEBUG)
         super().__init__(**kwargs)
 
     start_urls = [
