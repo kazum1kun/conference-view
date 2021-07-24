@@ -3,14 +3,14 @@ from scrapy import Selector
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 from conference_crawler.items import *
 
 
-class InfocomIeeeSpider(scrapy.Spider):
-    name = 'infocomieeespider'
+class IeeeSpider(scrapy.Spider):
+    name = 'ieeespider'
 
     def __init__(self, **kwargs):
         chrome_options = webdriver.ChromeOptions()
@@ -45,7 +45,7 @@ class InfocomIeeeSpider(scrapy.Spider):
 
     # Then, use Selenium to load the proceeding page and handle pagination
     def parse_conference(self, response, **kwargs):
-    # def parse(self, response, **kwargs):
+        # def parse(self, response, **kwargs):
         self.driver.get(response.url)
         base_url = response.url
 

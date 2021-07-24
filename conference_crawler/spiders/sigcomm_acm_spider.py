@@ -7,7 +7,7 @@ from conference_crawler.items import *
 
 
 # For ACM-sponsored conferences the information is more readily accessed in the ACM page on the conference proceedings
-class SigcommACMSpider(scrapy.Spider):
+class ACMSpider(scrapy.Spider):
     name = 'acmspider'
 
     def __init__(self, **kwargs):

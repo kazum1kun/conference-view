@@ -1,6 +1,6 @@
 from scrapy.crawler import CrawlerProcess
 
-from conference_crawler.spiders.sigcomm_acm_spider import SigcommACMSpider
+from conference_crawler.spiders.sigcomm_acm_spider import ACMSpider
 
 
 # Unused, use scrapy crawl xxx instead
@@ -13,7 +13,7 @@ def main():
         # },
     })
 
-    process.crawl(SigcommACMSpider)
+    process.crawl(ACMSpider)
     process.start()
 
 
