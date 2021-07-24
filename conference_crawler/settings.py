@@ -89,4 +89,4 @@ ITEM_PIPELINES = {
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 
-CONNECTION_STRING = 'sqlite:///' + os.getcwd() + os.sep + 'db' + os.sep + 'conference_acm.db'
+CONNECTION_STRING = 'sqlite:///' + os.getcwd() + os.sep + 'db' + os.sep + 'conference_sigcomm.db'

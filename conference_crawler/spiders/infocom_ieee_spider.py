@@ -65,14 +65,14 @@ class InfocomIeeeSpider(scrapy.Spider):
         self.parse_page(response, conf_item)
 
         # Some proceedings are broken into several "volumes" which also needs to be clicked through
-        try:
-            volumes = self.driver.find_elements_by_css_selector('div.volume-container div select option')
+        volumes = self.driver.find_elements_by_css_selector('div.volume-container div select option')
+        if volumes:
             volume_nums = [volume.get_attribute('value') for volume in volumes]
             # Skip the first volume as this is already being parsed
             for vol_num in volume_nums[1:]:
                 self.driver.get(f'{base_url}&isnumber={vol_num}')
                 self.navigate_pages(conf_item, True)
-        except NoSuchElementException as e:
+        else:
             self.navigate_pages(conf_item, False)
 
         yield conf_item
@@ -106,7 +106,7 @@ class InfocomIeeeSpider(scrapy.Spider):
             # From observation, it seems that the entries with open access are not real papers, so safe to skip them
             # Some non-papers also don't have author information, which can be ignored
             if paper.css('span.icon-access-ephemera') or not paper.css('p.author'):
-                logging.info(f'An article named {paper_title} was ignored')
+                self.logger.info(f'An article named {paper_title} was ignored')
                 continue
 
             paper_item = PaperItem(paper_title, [])
