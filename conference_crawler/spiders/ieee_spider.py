@@ -23,6 +23,7 @@ class IeeeSpider(scrapy.Spider):
 
     start_urls = [
         'https://ieeexplore.ieee.org/xpl/conhome/1000359/all-proceedings'
+        # 'https://ieeexplore.ieee.org/xpl/conhome/3539/proceeding?rowsPerPage=100'
     ]
 
     custom_settings = {
@@ -45,7 +46,7 @@ class IeeeSpider(scrapy.Spider):
 
     # Then, use Selenium to load the proceeding page and handle pagination
     def parse_conference(self, response, **kwargs):
-        # def parse(self, response, **kwargs):
+    # def parse(self, response, **kwargs):
         self.driver.get(response.url)
         base_url = response.url
 

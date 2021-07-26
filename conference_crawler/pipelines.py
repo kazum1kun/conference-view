@@ -33,21 +33,20 @@ class ConferenceCrawlerPipeline:
             paper_db.title = paper.title
 
             for author in paper.authors:
-                author_db = None
                 # If the author is already existing, add the paper to the existing entry
                 try:
-                    if author.acm_id:
+                    if author.acm_id is not None:
                         author_db = session.query(Author).filter_by(acm_id=author.acm_id).one()
-                    elif author.ieee_id:
+                    elif author.ieee_id is not None:
                         author_db = session.query(Author).filter_by(ieee_id=author.ieee_id).one()
+                    else:
+                        author_db = session.query(Author).filter(Author.acm_id.is_(None), Author.ieee_id.is_(None)).one()
+
                 except MultipleResultsFound as e:
                     # Impossible given the situation
-                    pass
+                    author_db = None
                 except NoResultFound as e:
-                    author_db = Author()
-                    author_db.name = author.name
-                    author_db.acm_id = author.acm_id
-                    author_db.ieee_id = author.ieee_id
+                    author_db = self.create_author(author)
                     session.add(author_db)
 
                 paper_db.authors.append(author_db)
@@ -60,3 +59,10 @@ class ConferenceCrawlerPipeline:
         session.close()
 
         return item
+
+    def create_author(self, author):
+        author_db = Author()
+        author_db.name = author.name
+        author_db.acm_id = author.acm_id
+        author_db.ieee_id = author.ieee_id
+        return author_db
