@@ -1,3 +1,5 @@
+import re
+
 import scrapy
 
 from tpc_crawler.items import *
@@ -24,13 +26,25 @@ class SigCommTpcSpider(scrapy.Spider):
         'https://conferences.sigcomm.org/sigcomm/2009/organization.php',
         'https://conferences.sigcomm.org/sigcomm/2008/organization.php',
         'https://conferences.sigcomm.org/sigcomm/2007/committee.html',
+        'https://conferences.sigcomm.org/sigcomm/2005/pc.html',
         # SIGCOMM 2006: using Archived page as the original is broken
-        'https://web.archive.org/web/20151023052717/http://conferences.sigcomm.org/sigcomm/2006/?committees'
+        'https://web.archive.org/web/20151023052717/http://conferences.sigcomm.org/sigcomm/2006/?committees',
+        # SIGCOMM 2003
+        'https://conferences.sigcomm.org/sigcomm/2003/programcommitee.html',
+        'https://conferences.sigcomm.org/sigcomm/2002/prgcomm.html',
+        'https://conferences.sigcomm.org/sigcomm/2001/program_committee.html',
+        'https://conferences.sigcomm.org/sigcomm/2000/program/index.htm',
+        'https://conferences.sigcomm.org/sigcomm/1999/program_committee.html'
+        'https://conferences.sigcomm.org/sigcomm/1998/members.html'
+        'https://conferences.sigcomm.org/sigcomm/1997/program-committee.html'
+        'https://conferences.sigcomm.org/sigcomm/1996/sigcomm96-pc.html'
+        'https://conferences.sigcomm.org/sigcomm/1995/comm.html'
     ]
 
     def parse(self, response, **kwargs):
-        # Get the year of conference
-        conf_year = int(response.css('title::text').re(r'\d+')[0])
+        # Get the year of conference from url
+        year_expr = re.compile(r'sigcomm/(\d+)')
+        conf_year = int(year_expr.findall(response.url)[0])
 
         if conf_year >= 2012:
             tpc = self.parse_new(response)
@@ -41,7 +55,7 @@ class SigCommTpcSpider(scrapy.Spider):
         elif conf_year == 2004:
             tpc = self.get_2004()
         else:
-            tpc = self.parse_legacy(response)
+            tpc = self.parse_legacy(response, conf_year)
 
         yield TpcItem(ConferenceType.SIGCOMM, int(conf_year), tpc)
 
@@ -104,15 +118,31 @@ class SigCommTpcSpider(scrapy.Spider):
                 'Nina Taft',
                 'Jon Turner',
                 'Yin Zhang',
-                'Zhi-li Zhang',]
+                'Zhi-li Zhang']
 
-    def parse_(self, response):
+    def parse_legacy(self, response, year):
         # Obtain the list of TPC members
-        tpc_list = response.xpath('//td/p[2]/text()').getall()
+        if year == 2003:
+            tpc_list = response.xpath('//td/p[2]/text()').getall()
+        elif year == 2002:
+            tpc_list = response.css('b font::text').getall()[1:]
+        elif year == 2001:
+            tpc_list = response.xpath('//td/p[4]/font/text()').getall()
+        elif year == 2000:
+            tpc_list = response.css('td p::text').getall()[8:]
+        elif year == 1999 or year == 1998:
+            tpc_list = response.css('td p::text').getall()
+        elif year == 1997:
+            tpc_list = response.css('p::text').getall()
+        elif year == 1996:
+            tpc_list = response.css('body::text').getall()
+        elif year == 1995:
+            tpc_list = response.xpath('//body/p[3]/text()').getall()
+        else:
+            tpc_list = []
         # Remove the affiliation info from the author
         tpc = [member.split(',')[0].strip() for member in tpc_list]
         # Remove the empty strings resulting from newline characters
         tpc = [member for member in tpc if member]
 
         return tpc
-
