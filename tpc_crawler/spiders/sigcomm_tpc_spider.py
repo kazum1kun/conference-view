@@ -18,8 +18,8 @@ class SigCommTpcSpider(scrapy.Spider):
         'https://conferences.sigcomm.org/sigcomm/2016/pc.php',
         'https://conferences.sigcomm.org/sigcomm/2015/pc.php',
         'https://conferences.sigcomm.org/sigcomm/2014/pc.php',
-        'https://conferences.sigcomm.org/sigcomm/2013/pclist.php'
-        'https://conferences.sigcomm.org/sigcomm/2012/pclist.php'
+        'https://conferences.sigcomm.org/sigcomm/2013/pclist.php',
+        'https://conferences.sigcomm.org/sigcomm/2012/pclist.php',
         # Old SIGCOMM
         'https://conferences.sigcomm.org/sigcomm/2011/organization.php',
         'https://conferences.sigcomm.org/sigcomm/2010/organization.php',
@@ -29,16 +29,18 @@ class SigCommTpcSpider(scrapy.Spider):
         'https://conferences.sigcomm.org/sigcomm/2005/pc.html',
         # SIGCOMM 2006: using Archived page as the original is broken
         'https://web.archive.org/web/20151023052717/http://conferences.sigcomm.org/sigcomm/2006/?committees',
-        # SIGCOMM 2003
+        # SIGCOMM 2004
+        'https://conferences.sigcomm.org/sigcomm/2004/prog_comm.html',
+        # Legacy SIGCOMM
         'https://conferences.sigcomm.org/sigcomm/2003/programcommitee.html',
         'https://conferences.sigcomm.org/sigcomm/2002/prgcomm.html',
         'https://conferences.sigcomm.org/sigcomm/2001/program_committee.html',
         'https://conferences.sigcomm.org/sigcomm/2000/program/index.htm',
-        'https://conferences.sigcomm.org/sigcomm/1999/program_committee.html'
-        'https://conferences.sigcomm.org/sigcomm/1998/members.html'
-        'https://conferences.sigcomm.org/sigcomm/1997/program-committee.html'
-        'https://conferences.sigcomm.org/sigcomm/1996/sigcomm96-pc.html'
-        'https://conferences.sigcomm.org/sigcomm/1995/comm.html'
+        'https://conferences.sigcomm.org/sigcomm/1999/program_committee.html',
+        'https://conferences.sigcomm.org/sigcomm/1998/members.html',
+        'https://conferences.sigcomm.org/sigcomm/1997/program-committee.html',
+        'https://conferences.sigcomm.org/sigcomm/1996/sigcomm96-pc.html',
+        'https://conferences.sigcomm.org/sigcomm/1995/comm.html',
     ]
 
     def parse(self, response, **kwargs):
@@ -49,7 +51,7 @@ class SigCommTpcSpider(scrapy.Spider):
         if conf_year >= 2012:
             tpc = self.parse_new(response)
         elif conf_year >= 2007 or conf_year == 2005:
-            tpc = self.parse_old(response)
+            tpc = self.parse_old(response, conf_year)
         elif conf_year == 2006:
             tpc = self.parse_2006(response)
         elif conf_year == 2004:
@@ -66,17 +68,22 @@ class SigCommTpcSpider(scrapy.Spider):
         tpc = [name.strip() for name in tpc]
         return tpc
 
-    def parse_old(self, response):
+    def parse_old(self, response, year):
         # Get the table that tpc list resides in by selecting the table under the TPC/PC header
         tpc_table = response.xpath('//table[./preceding-sibling::h2[1]="Technical Program Committee"]')
         if not tpc_table:
             tpc_table = response.xpath('//table[./preceding-sibling::h2[1]="Program Committee"]')
 
         # Obtain the names by following the first column
-        tpc = tpc_table.xpath('./tr/td[1]/text()').getall()
-        # Special rule for 2005
-        tpc_additional = tpc_table.xpath('./tr/td[3]/text()').getall()
-        if tpc_additional:
+        # Special rule for 2007
+        if year == 2007:
+            tpc = tpc_table.xpath('./tr/td[2]/text()').getall()[3:]
+            # All names are Last, First and some has missing/extra whitespaces, hence needing to clean the names first
+            tpc = [' '.join(name.replace(' ', '').split(',')[::-1]) for name in tpc]
+        else:
+            tpc = tpc_table.xpath('./tr/td[1]/text()').getall()
+        if year == 2005:
+            tpc_additional = tpc_table.xpath('./tr/td[3]/text()').getall()
             tpc.extend(tpc_additional)
         return tpc
 
@@ -139,6 +146,7 @@ class SigCommTpcSpider(scrapy.Spider):
         elif year == 1995:
             tpc_list = response.xpath('//body/p[3]/text()').getall()
         else:
+            # Shouldn't happen
             tpc_list = []
         # Remove the affiliation info from the author
         tpc = [member.split(',')[0].strip() for member in tpc_list]

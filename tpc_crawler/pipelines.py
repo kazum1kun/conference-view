@@ -13,7 +13,7 @@ from tpc_crawler.models import *
 from conference_crawler.models import *
 
 
-class ConferenceCrawlerPipeline:
+class TpcCrawlerPipeline:
     # Init db connection and sessionmaker, and create tables
     def __init__(self):
         engine = db_connect()

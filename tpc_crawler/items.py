@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 
 
-class ConferenceType(Enum):
+class ConferenceType(str, Enum):
     INFOCOM = 'INFOCOM'
     SIGCOMM = 'SIGCOMM'
     MOBICOM = 'MobiCom'

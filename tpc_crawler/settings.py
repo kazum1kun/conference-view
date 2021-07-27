@@ -8,10 +8,10 @@
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 import os
 
-BOT_NAME = 'conference_crawler'
+BOT_NAME = 'tpc_crawler'
 
-SPIDER_MODULES = ['conference_crawler.spiders']
-NEWSPIDER_MODULE = 'conference_crawler.spiders'
+SPIDER_MODULES = ['tpc_crawler.spiders']
+NEWSPIDER_MODULE = 'tpc_crawler.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # Must set or IEEE Xplore will return "unavailable" page
@@ -64,7 +64,7 @@ ROBOTSTXT_OBEY = False
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'conference_crawler.pipelines.ConferenceCrawlerPipeline': 300,
+    'tpc_crawler.pipelines.TpcCrawlerPipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
