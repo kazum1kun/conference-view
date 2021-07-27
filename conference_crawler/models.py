@@ -22,6 +22,7 @@ class Conference(Base):
     name = Column(String)
     year = Column(Integer)
     papers = relationship("Paper", backref="conference")
+    tpc = relationship('Tpc', backref="conference")
 
 
 paper_author_table = Table('paper_author', Base.metadata,

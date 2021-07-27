@@ -20,71 +20,78 @@ class ACMSpider(scrapy.Spider):
         super().__init__(**kwargs)
 
     start_urls = [
-        # SIGCOMM Proceedings
-        'https://dl.acm.org/doi/proceedings/10.1145/319056',  # '85
-        'https://dl.acm.org/doi/proceedings/10.1145/18172',
-        'https://dl.acm.org/doi/proceedings/10.1145/55482',
-        'https://dl.acm.org/doi/proceedings/10.1145/52324',
-        'https://dl.acm.org/doi/proceedings/10.1145/75246',
-        'https://dl.acm.org/doi/proceedings/10.1145/99508',  # '90
-        'https://dl.acm.org/doi/proceedings/10.1145/115992',
-        'https://dl.acm.org/doi/proceedings/10.1145/144179',
-        'https://dl.acm.org/doi/proceedings/10.1145/166237',
-        'https://dl.acm.org/doi/proceedings/10.1145/190314',
-        'https://dl.acm.org/doi/proceedings/10.1145/217382',  # '95
-        'https://dl.acm.org/doi/proceedings/10.1145/248156',
-        'https://dl.acm.org/doi/proceedings/10.1145/263105',
-        'https://dl.acm.org/doi/proceedings/10.1145/285237',
-        'https://dl.acm.org/doi/proceedings/10.1145/316188',
-        'https://dl.acm.org/doi/proceedings/10.1145/347059',  # '00
-        'https://dl.acm.org/doi/proceedings/10.1145/383059',
-        'https://dl.acm.org/doi/proceedings/10.1145/633025',
-        'https://dl.acm.org/doi/proceedings/10.1145/1015467',
-        'https://dl.acm.org/doi/proceedings/10.1145/1080091',  # '05
-        'https://dl.acm.org/doi/proceedings/10.1145/1159913',
-        'https://dl.acm.org/doi/proceedings/10.1145/1282380',
-        'https://dl.acm.org/doi/proceedings/10.1145/1402958',
-        'https://dl.acm.org/doi/proceedings/10.1145/1592568',
-        'https://dl.acm.org/doi/proceedings/10.1145/1851182',  # '10
-        'https://dl.acm.org/doi/proceedings/10.1145/2018436',
-        'https://dl.acm.org/doi/proceedings/10.1145/2342356',
+        # # SIGCOMM Proceedings
+        # 'https://dl.acm.org/doi/proceedings/10.1145/319056',  # '85
+        # 'https://dl.acm.org/doi/proceedings/10.1145/18172',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/55482',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/52324',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/75246',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/99508',  # '90
+        # 'https://dl.acm.org/doi/proceedings/10.1145/115992',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/144179',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/166237',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/190314',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/217382',  # '95
+        # 'https://dl.acm.org/doi/proceedings/10.1145/248156',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/263105',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/285237',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/316188',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/347059',  # '00
+        # 'https://dl.acm.org/doi/proceedings/10.1145/383059',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/633025',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/1015467',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/1080091',  # '05
+        # 'https://dl.acm.org/doi/proceedings/10.1145/1159913',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/1282380',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/1402958',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/1592568',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/1851182',  # '10
+        # 'https://dl.acm.org/doi/proceedings/10.1145/2018436',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/2342356',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/2486001',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/2619239',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/2785956',  # '15
+        # 'https://dl.acm.org/doi/proceedings/10.1145/2934872',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/3098822',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/3230543',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/3341302',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/3387514',
+        #
+        # # MOBICOM proceedings
+        # 'https://dl.acm.org/doi/proceedings/10.1145/215530',  # '95
+        # 'https://dl.acm.org/doi/proceedings/10.1145/236387',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/262116',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/288235',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/313451',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/345910',  # '00
+        # 'https://dl.acm.org/doi/proceedings/10.1145/381677',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/570645',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/938985',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/1023720',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/1080829',  # '05
+        # 'https://dl.acm.org/doi/proceedings/10.1145/1161089',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/1287853',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/1409944',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/1614320',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/1859995',  # '10
+        # 'https://dl.acm.org/doi/proceedings/10.1145/2030613',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/2348543',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/2500423',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/2639108',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/2789168',  # '15
+        # 'https://dl.acm.org/doi/proceedings/10.1145/2973750',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/3117811',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/3241539',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/3300061',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/3372224',  # '20
+        # 'https://dl.acm.org/doi/proceedings/10.1145/3447993',
+        'https://dl.acm.org/doi/proceedings/10.1145/863955',
         'https://dl.acm.org/doi/proceedings/10.1145/2486001',
-        'https://dl.acm.org/doi/proceedings/10.1145/2619239',
-        'https://dl.acm.org/doi/proceedings/10.1145/2785956',  # '15
-        'https://dl.acm.org/doi/proceedings/10.1145/2934872',
-        'https://dl.acm.org/doi/proceedings/10.1145/3098822',
-        'https://dl.acm.org/doi/proceedings/10.1145/3230543',
-        'https://dl.acm.org/doi/proceedings/10.1145/3341302',
+        'https://dl.acm.org/doi/proceedings/10.1145/3117811',
+        'https://dl.acm.org/doi/proceedings/10.1145/3300061',
+        'https://dl.acm.org/doi/proceedings/10.1145/3372224',
         'https://dl.acm.org/doi/proceedings/10.1145/3387514',
 
-        # MOBICOM proceedings
-        'https://dl.acm.org/doi/proceedings/10.1145/215530',  # '95
-        'https://dl.acm.org/doi/proceedings/10.1145/236387',
-        'https://dl.acm.org/doi/proceedings/10.1145/262116',
-        'https://dl.acm.org/doi/proceedings/10.1145/288235',
-        'https://dl.acm.org/doi/proceedings/10.1145/313451',
-        'https://dl.acm.org/doi/proceedings/10.1145/345910',  # '00
-        'https://dl.acm.org/doi/proceedings/10.1145/381677',
-        'https://dl.acm.org/doi/proceedings/10.1145/570645',
-        'https://dl.acm.org/doi/proceedings/10.1145/938985',
-        'https://dl.acm.org/doi/proceedings/10.1145/1023720',
-        'https://dl.acm.org/doi/proceedings/10.1145/1080829',  # '05
-        'https://dl.acm.org/doi/proceedings/10.1145/1161089',
-        'https://dl.acm.org/doi/proceedings/10.1145/1287853',
-        'https://dl.acm.org/doi/proceedings/10.1145/1409944',
-        'https://dl.acm.org/doi/proceedings/10.1145/1614320',
-        'https://dl.acm.org/doi/proceedings/10.1145/1859995',  # '10
-        'https://dl.acm.org/doi/proceedings/10.1145/2030613',
-        'https://dl.acm.org/doi/proceedings/10.1145/2348543',
-        'https://dl.acm.org/doi/proceedings/10.1145/2500423',
-        'https://dl.acm.org/doi/proceedings/10.1145/2639108',
-        'https://dl.acm.org/doi/proceedings/10.1145/2789168',  # '15
-        'https://dl.acm.org/doi/proceedings/10.1145/2973750',
-        'https://dl.acm.org/doi/proceedings/10.1145/3117811',
-        'https://dl.acm.org/doi/proceedings/10.1145/3241539',
-        'https://dl.acm.org/doi/proceedings/10.1145/3300061',
-        'https://dl.acm.org/doi/proceedings/10.1145/3372224',  # '20
-        'https://dl.acm.org/doi/proceedings/10.1145/3447993',
     ]
 
     def parse(self, response, **kwargs):
@@ -138,7 +145,7 @@ class ACMSpider(scrapy.Spider):
         # Example title: MobiCom '18: Proceedings of the 24th Annual..., where the first part is used
         conf_title = response.css('div.left-bordered-title span::text').get().split(':')[0]
         conf_year = response.css('div.coverDate::text').get()
-        conf_item = ConferenceItem(conf_title, int(conf_year), [])
+        conf_item = ConferenceItem(conf_title, int(conf_year), [], [])
 
         # Special rule for SIGCOMM 19: opening words are labeled as "article" and the actual is "research-article"
         # Scan ~10 items to check if it's the case and proceed to special treatment if so
