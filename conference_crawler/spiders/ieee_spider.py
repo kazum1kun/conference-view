@@ -46,7 +46,7 @@ class IeeeSpider(scrapy.Spider):
 
     # Then, use Selenium to load the proceeding page and handle pagination
     def parse_conference(self, response, **kwargs):
-    # def parse(self, response, **kwargs):
+        # def parse(self, response, **kwargs):
         self.driver.get(response.url)
         base_url = response.url
 

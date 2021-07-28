@@ -6,11 +6,11 @@
 
 # useful for handling different item types with a single interface
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
+from sqlalchemy.orm.exc import NoResultFound
 
+from conference_crawler.models import *
 from tpc_crawler.items import *
 from tpc_crawler.models import *
-from conference_crawler.models import *
 
 
 class TpcCrawlerPipeline:

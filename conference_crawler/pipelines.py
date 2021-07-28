@@ -40,7 +40,8 @@ class ConferenceCrawlerPipeline:
                     elif author.ieee_id is not None:
                         author_db = session.query(Author).filter_by(ieee_id=author.ieee_id).one()
                     else:
-                        author_db = session.query(Author).filter(Author.acm_id.is_(None), Author.ieee_id.is_(None)).one()
+                        author_db = session.query(Author).filter(Author.acm_id.is_(None),
+                                                                 Author.ieee_id.is_(None)).one()
 
                 except MultipleResultsFound as e:
                     # Impossible given the situation
