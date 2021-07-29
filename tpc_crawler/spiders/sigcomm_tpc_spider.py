@@ -59,7 +59,10 @@ class SigCommTpcSpider(scrapy.Spider):
         else:
             tpc = self.parse_legacy(response, conf_year)
 
-        yield TpcItem(ConferenceType.SIGCOMM, int(conf_year), tpc)
+        # Remove the empty strings resulting from newline characters
+        tpc = [member for member in tpc if member]
+
+        yield TpcItem(ConferenceType.SIGCOMM, conf_year, tpc)
 
     def parse_new(self, response):
         # Get the tpc list
@@ -150,7 +153,5 @@ class SigCommTpcSpider(scrapy.Spider):
             tpc_list = []
         # Remove the affiliation info from the author
         tpc = [member.split(',')[0].strip() for member in tpc_list]
-        # Remove the empty strings resulting from newline characters
-        tpc = [member for member in tpc if member]
 
         return tpc
