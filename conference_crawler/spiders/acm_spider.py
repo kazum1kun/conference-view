@@ -85,9 +85,10 @@ class ACMSpider(scrapy.Spider):
         # 'https://dl.acm.org/doi/proceedings/10.1145/3300061',
         # 'https://dl.acm.org/doi/proceedings/10.1145/3372224',  # '20
         # 'https://dl.acm.org/doi/proceedings/10.1145/3447993',
-        'https://dl.acm.org/doi/proceedings/10.1145/863955',
-        'https://dl.acm.org/doi/proceedings/10.1145/2486001',
-        'https://dl.acm.org/doi/proceedings/10.1145/3117811',
+        # Missing items
+        # 'https://dl.acm.org/doi/proceedings/10.1145/863955',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/2486001',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/3117811',
         'https://dl.acm.org/doi/proceedings/10.1145/3300061',
         'https://dl.acm.org/doi/proceedings/10.1145/3372224',
         'https://dl.acm.org/doi/proceedings/10.1145/3387514',
@@ -115,7 +116,7 @@ class ACMSpider(scrapy.Spider):
         show_all = self.driver.find_elements_by_css_selector('button.showAllProceedings')
         if show_all:
             see_more_count = len(self.driver.find_elements_by_css_selector('div.see_more'))
-            list_bottom = self.driver.find_elements_by_css_selector('ol.organizational-chart')
+            list_bottom = self.driver.find_elements_by_css_selector('h2#sec-comments')
             show_all[0].click()
             while True:
                 # Some docs requires multiple loads - when additional "see_more" div is present
@@ -145,7 +146,7 @@ class ACMSpider(scrapy.Spider):
         # Example title: MobiCom '18: Proceedings of the 24th Annual..., where the first part is used
         conf_title = response.css('div.left-bordered-title span::text').get().split(':')[0]
         conf_year = response.css('div.coverDate::text').get()
-        conf_item = ConferenceItem(conf_title, int(conf_year), [], [])
+        conf_item = ConferenceItem(conf_title, int(conf_year), [])
 
         # Special rule for SIGCOMM 19: opening words are labeled as "article" and the actual is "research-article"
         # Scan ~10 items to check if it's the case and proceed to special treatment if so

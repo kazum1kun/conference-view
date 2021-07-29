@@ -57,3 +57,10 @@ class AuthorInstitution(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
     author_id = Column(Integer, ForeignKey('author.id'))
+
+
+class Tpc(Base):
+    __tablename__ = 'tpc'
+    id = Column(Integer, primary_key=True)
+    conference_id = Column(Integer, ForeignKey('conference.id'))
+    name = Column(String)
