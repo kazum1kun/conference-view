@@ -78,7 +78,8 @@ class InfocomTpcSpider(scrapy.Spider):
         else:
             tpc = response.css('div#page p::text').getall()
         # Remove the affiliation information
-        tpc = [name.split(',')[0].strip() for name in tpc]
+        tpc = [name.split(',')[0] for name in tpc]
+        tpc = [re.sub(r' \(.*\)', '', name).strip() for name in tpc]
         # Remove the empty strings resulting from newline characters
         tpc = [member for member in tpc if member]
 
@@ -157,7 +158,7 @@ class InfocomTpcSpider(scrapy.Spider):
                 'Farinaz Koushanfar', 'Iordanis Koutsopoulos', 'Bhaskar Krishnamachari', 'Marwan Krunz',
                 'Santosh Kumar', 'Sailesh Kumar', 'Amit Kumar', 'Richard La', 'Tom La Porta', 'Koen Langendoen',
                 'Nikolaos Laoutaris', 'Wing Cheong Lau', 'Loukas Lazos', 'Sung-Ju Lee', 'Kang-Won Lee', 'Wonjun Lee',
-                'Emilio Leonardi', 'Kin Leung', 'Xiaolin (Andy) Li', 'Baochun Li', 'Li (Erran) Li', 'Qun Li',
+                'Emilio Leonardi', 'Kin Leung', 'Xiaolin Li', 'Baochun Li', 'Li Li', 'Qun Li',
                 'Xiang-Yang Li', 'Jie Li', 'Guangzhi Li', 'Minglu Li', 'Ben Liang', 'Wanjiun Liao', 'Lavy Libman',
                 'Xiaojun Lin', 'Christoph Lindemann', 'Bin Liu', 'Peng Liu', 'Alex Liu', 'Yunhao Liu', 'Mingyan Liu',
                 'Yonghe Liu', 'Xin Liu', 'Yong Liu', 'Xue Liu', 'Benyuan Liu', 'Jiangchuan Liu', 'Renato Lo Cigno',
@@ -169,7 +170,7 @@ class InfocomTpcSpider(scrapy.Spider):
                 'Prasant Mohapatra', 'Refik Molva', 'Petar Momcilovic', 'Andrew Moore', 'Thomas Moscibroda',
                 'Thyaga Nandagopal', 'Giovanni Neglia', 'Srihari Nelakuditi', 'Hung Ngo', 'Jason Nieh', 'Peng Ning',
                 'Cristina Nita-Rotaru', 'Guevara Noubir', 'Pavan Nuggehalli', 'Joerg Ott', 'Fernando Paganini',
-                'Sergio Palazzo', 'Jianping Pan', 'Shivendra Panwar', 'Panagiotis (Panos) Papadimitratos',
+                'Sergio Palazzo', 'Jianping Pan', 'Shivendra Panwar', 'Panagiotis Papadimitratos',
                 'Vasileios Pappas', 'Kihong Park', 'Jung-Min Park', 'Chiara Petrioli', 'Dhananjay Phatak',
                 'Radha Poovendran', 'Alexandre Proutiere', 'Konstantinos Psounis', 'Wangdong Qi', 'Yi Qian',
                 'Daji Qiao', 'Lili Qiu', 'Byrav Ramamurthy', 'Bhaskaran Raman', 'Srinivasan Ramasubramanian',

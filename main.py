@@ -10,11 +10,11 @@ from tpc_crawler.spiders.mobicom_tpc_spider import MobiComTpcSpider
 def main():
     process = CrawlerProcess(settings={
         "FEEDS": {
-            "mobicom_tpc.json": {"format": "json"},
+            "infocom_tpc.json": {"format": "json"},
         },
     })
 
-    process.crawl(MobiComTpcSpider)
+    process.crawl(InfocomTpcSpider)
     process.start()
 
 
