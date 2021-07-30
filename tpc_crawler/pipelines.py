@@ -8,7 +8,6 @@
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 
-from conference_crawler.models import *
 from tpc_crawler.items import *
 from conference_crawler.models import *
 

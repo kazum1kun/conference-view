@@ -86,12 +86,9 @@ class ACMSpider(scrapy.Spider):
         # 'https://dl.acm.org/doi/proceedings/10.1145/3372224',  # '20
         # 'https://dl.acm.org/doi/proceedings/10.1145/3447993',
         # Missing items
-        # 'https://dl.acm.org/doi/proceedings/10.1145/863955',
-        # 'https://dl.acm.org/doi/proceedings/10.1145/2486001',
-        # 'https://dl.acm.org/doi/proceedings/10.1145/3117811',
-        'https://dl.acm.org/doi/proceedings/10.1145/3300061',
-        'https://dl.acm.org/doi/proceedings/10.1145/3372224',
-        'https://dl.acm.org/doi/proceedings/10.1145/3387514',
+        'https://dl.acm.org/doi/proceedings/10.1145/863955',
+        'https://dl.acm.org/doi/proceedings/10.1145/2486001',
+        'https://dl.acm.org/doi/proceedings/10.1145/3117811',
 
     ]
 
