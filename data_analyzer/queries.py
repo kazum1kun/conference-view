@@ -36,11 +36,19 @@ class Queries:
 
         return papers
 
-    # Look up author's services in TPC
-    def lookup_author_tpc_services(self, author_name):
+    # Look up the name of tpc members
+    def lookup_tpc_names(self, name):
+        # Case-insensitive
+        names = self.session.query(Tpc).join(Conference).filter(
+            func.lower(Tpc.name).contains(func.lower(name))).all()
+
+        return names
+
+    # Look up service history of a tpc member
+    def lookup_tpc_services(self, tpc_name):
         # Case-insensitive
         conferences = self.session.query(Conference).join(Tpc).filter(
-            func.lower(Tpc.name).contains(func.lower(author_name))).all()
+            func.lower(Tpc.name).contains(func.lower(tpc_name))).all()
 
         return conferences
 
