@@ -9,6 +9,7 @@ Base = declarative_base()
 
 
 def db_connect():
+    print(get_project_settings().get('CONNECTION_STRING'))
     return create_engine(get_project_settings().get('CONNECTION_STRING'))
 
 

@@ -1,7 +1,8 @@
 from sqlalchemy.orm import sessionmaker, Session
-from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy import func
 
 from conference_crawler.models import *
+
 
 class Queries:
     # Init db connection and sessionmaker
@@ -9,18 +10,20 @@ class Queries:
         engine = db_connect()
         self.session: Session = sessionmaker(bind=engine)()
 
-    def __del__(self):
-        self.session.close()
-
     # Look up author by name and return their published papers
     def lookup_author_by_name(self, author_name):
-        authors = self.session.query(Author).filter(Author.name.contains(author_name))
+        # Case-insensitive query
+        authors = self.session.query(Author).filter(func.lower(Author.name).contains(func.lower(author_name)))
 
         return authors.all()
 
     # Lookup conference id by year and name
     def lookup_conference_id(self, name, year):
-        conf_id = self.session.query(Conference.id).filter(Conference.name.contains(name), Conference.year == year).first()
+        # Case-insensitive query
+        conf_id = self.session.query(Conference.id).filter(
+            func.lower(Conference.name).contains(func.lower(name)),
+            Conference.year == year)\
+            .first()
 
         if conf_id is not None:
             return conf_id[0]
@@ -35,8 +38,9 @@ class Queries:
 
     # Look up author's services in TPC
     def lookup_author_tpc_services(self, author_name):
-        # Lookup author's TPC service
-        conferences = self.session.query(Conference).join(Tpc).filter(Tpc.name.contains(author_name)).all()
+        # Case-insensitive
+        conferences = self.session.query(Conference).join(Tpc).filter(
+            func.lower(Tpc.name).contains(func.lower(author_name))).all()
 
         return conferences
 
