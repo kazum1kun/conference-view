@@ -22,7 +22,7 @@ class Queries:
         # Case-insensitive query
         conf_id = self.session.query(Conference.id).filter(
             func.lower(Conference.name).contains(func.lower(name)),
-            Conference.year == year)\
+            Conference.year == year) \
             .first()
 
         if conf_id is not None:
@@ -59,14 +59,27 @@ class Queries:
 
         return conference
 
-    # Get the list of authors whose papers are accepted in a conference
-    def lookup_accepted_author_name(self, conf_id):
+    # Get the list of authors (name and id) whose papers are accepted in a conference
+    def lookup_accepted_author(self, conf_id):
         # Get the list of papers that are accepted in a conference
         papers = self.session.query(Paper.id).filter_by(conference_id=conf_id).all()
         # Convert the result to a list (originally list of tuples)
         papers = [paper for paper, in papers]
 
-        # Get the list of authors
-        authors = self.session.query(Author.name).filter(Author.papers.any(Paper.id.in_(papers))).all()
+        authors = self.session.query(Author.id, Author.name).filter(Author.papers.any(Paper.id.in_(papers))).all()
 
-        return [author for author, in authors]
+        return authors
+
+    # Look up conference name by id
+    def lookup_conference_name_by_id(self, conf_id):
+        conf_name = self.session.query(Conference.name).filter(Conference.id == conf_id).first()
+
+        return conf_name[0]
+
+    # Look up tpc members on a conference
+    def lookup_tpc_on_conference(self, conf_id):
+        tpc = self.session.query(Tpc.name).filter(Tpc.conference_id == conf_id).all()
+
+        tpc = [name for name, in tpc]
+
+        return tpc
