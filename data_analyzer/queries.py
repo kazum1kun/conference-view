@@ -1,5 +1,5 @@
-from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy import func
+from sqlalchemy.orm import sessionmaker, Session
 
 from conference_crawler.models import *
 

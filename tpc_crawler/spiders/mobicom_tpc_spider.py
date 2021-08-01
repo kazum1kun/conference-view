@@ -139,4 +139,3 @@ class MobiComTpcSpider(scrapy.Spider):
         # Remove author affiliation info from the names
         tpc = [name.split(',')[0].strip() for name in tpc]
         return tpc
-

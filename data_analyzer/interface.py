@@ -1,4 +1,3 @@
-from conference_crawler.models import *
 from queries import Queries
 
 query = Queries()
