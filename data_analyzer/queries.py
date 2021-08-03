@@ -59,8 +59,23 @@ class Queries:
 
         return conference
 
+    # Get the list of authors (name and id) given a paper
+    def lookup_paper_authors(self, paper_id):
+        authors = self.session.query(Author.id, Author.name).filter(Author.papers.any(Paper.id == paper_id)).all()
+
+        return authors
+
+    # Look up the list of papers in a conference
+    def lookup_papers_in_conference(self, conf_id):
+        # Get the list of papers that are accepted in a conference
+        papers = self.session.query(Paper.id).filter_by(conference_id=conf_id).all()
+        # Convert the result to a list (originally list of tuples)
+        papers = [paper for paper, in papers]
+
+        return papers
+
     # Get the list of authors (name and id) whose papers are accepted in a conference
-    def lookup_accepted_author(self, conf_id):
+    def lookup_accepted_authors(self, conf_id):
         # Get the list of papers that are accepted in a conference
         papers = self.session.query(Paper.id).filter_by(conference_id=conf_id).all()
         # Convert the result to a list (originally list of tuples)

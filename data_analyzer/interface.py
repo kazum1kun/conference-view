@@ -1,3 +1,5 @@
+import sys
+
 from queries import Queries
 
 query = Queries()
@@ -9,6 +11,7 @@ def main():
               '1. Look up an author and the papers they published\n'
               '2. Look up an author and the conferences they served as TPC\n'
               '3. See various statistics of a conference\n'
+              '4. Get a report of all available data of the conferences\n'
               '0. Exit')
         selection = int(input('Your selection: '))
 
@@ -18,6 +21,8 @@ def main():
             author_tpc()
         elif selection == 3:
             conf_stats()
+        elif selection == 4:
+            conference_report()
         else:
             break
 
@@ -95,23 +100,54 @@ def conf_stats():
     conf_name = input('Conference name: ')
     print('Please enter the year of the conference, between 1985 and 2021')
     conf_year = int(input('Conference year: '))
+
+    result = calc_conference_stats(conf_name, conf_year)
+    if result is None:
+        print(f'{conf_name} {conf_year} is not found in the database. Please check your input')
+
+    print(f'Among all papers accepted on {result["conf_name"]}, there are {"{:.1f}".format(result["published_pct"])}% '
+          f'({result["published_count"]}/{result["total_papers"]}) papers that have at least one author who published'
+          f' on this conference before')
+    print(f'In addition, {"{:.1f}".format(result["tpc_pct"])}% ({result["tpc_count"]}/{result["total_papers"]}) of '
+          f'the papers have at least one author who serves in the TPC as well ')
+    print(f'{"{:.1f}".format(result["both_pct"])} ({result["both_count"]}/{result["total_papers"]}) papers satisfy '
+          f'both criteria above')
+
+
+# Obtain a report on the conference data
+def conference_report():
+    print('\nGenerating report, please wait')
+    with open('conference_report.csv', 'w+') as output:
+        output.write('conf_name,total_papers,published_count,tpc_count,both_count\n')
+        for conf_name in ['SIGCOMM', 'INFOCOM', 'MOBICOM']:
+            for conf_year in range(1985, 2022):
+                sys.stdout.write(f'\rNow processing {conf_name} {conf_year}')
+                sys.stdout.flush()
+                result = calc_conference_stats(conf_name, conf_year)
+                # Data may be missing for some years, skip them
+                if result is None:
+                    output.write(f'Data for {conf_name} {conf_year} is missing')
+                else:
+                    output.write(f'{result["conf_name"]},{result["total_papers"]},{result["published_count"]},'
+                                 f'{result["tpc_count"]},{result["both_count"]}\n')
+    print('\nReport saved as conference_report.csv')
+
+
+def calc_conference_stats(conf_name, conf_year):
     # Check if the conference exists in the DB
     conf_id = query.lookup_conference_id(conf_name, conf_year)
     if conf_id == -1:
-        print(f'{conf_name} {conf_year} is not found in the database. Please check your input')
-        return
+        return None
     orig_conf_name = query.lookup_conference_name_by_id(conf_id)
     orig_conf_id = conf_id
 
-    # The first statistic is to see how many (or what percentage) of authors have never published in this conference
-    # before. Since each author entity is unique (given their ACM/IEEE ID is unique), we can safely assume that the
-    # author's ID is also unique and can be used for this purpose
-    past_authors_id = set()
+    # The first statistic is to see how many (or what percentage) of papers are written by authors that have never
+    # published in this conference before. Note that as long as one of the authors of a paper has published before, the
+    # paper is considered as written by someone who published before. Since each author entity is unique (given their
+    # ACM/IEEE ID is unique),  we can safely assume that the author's ID is also unique and can be used for this purpose
 
-    # Results are in [(authod.id, author.name), (...)] format, need to unpack them first
-    authors = list(zip(*query.lookup_accepted_author(conf_id)))
-    current_authors_id = set(authors[0])
-    current_authors_name = set(authors[1])
+    # Get the ids of all authors that have published in the past
+    past_authors_id = set()
 
     cy = conf_year
     while cy > 1985:
@@ -124,33 +160,63 @@ def conf_stats():
             continue
 
         # Add the list of author ids in the current year to the set
-        past_authors_id.update(list(zip(*query.lookup_accepted_author(conf_id)))[0])
+        past_authors_id.update(list(zip(*query.lookup_accepted_authors(conf_id)))[0])
 
-    # Compare the set of past authors and current authors: find the intersection between the two (i.e. the authors that
-    # has published in the past) and divide it by the number of current authors to obtain the ratio
-    current_published = past_authors_id & current_authors_id
-    new_author_count = len(current_authors_id) - len(current_published)
-    new_author_pct = new_author_count / len(current_authors_id) * 100
-
-    # Another stat one might be interested in is how many accepted authors serve in the TPC. Since we only have the
-    # names of the TPC members, comparing names vs accepted authors should give us a close approximation
-
-    # Convert the name lists to lower case
-    current_authors_names = set([name.lower() for name in current_authors_name])
+    # Get the list of people that served in the tpc
     tpc_names = set([name.lower() for name in query.lookup_tpc_on_conference(orig_conf_id)])
 
-    # Calculate the intersect anf derive the stats
-    tpc_publish = current_authors_names & tpc_names
-    tpc_publish_pct = len(tpc_publish) / len(current_authors_names) * 100
+    # Get the list of papers in the conference
+    papers_id = query.lookup_papers_in_conference(orig_conf_id)
 
-    # Calculate how many in the tpc have their paper accepted
-    tpc_accepted_pct = len(tpc_publish) / len(tpc_names) * 100
+    paper_author = []
+    # Combine author data with the paper id
+    for paper in papers_id:
+        # Results are in [(author.id, author.name), (...)] format, need to unpack them first (id and names saved as
+        # lists to facilitate comparison)
+        authors = list(zip(*query.lookup_paper_authors(paper)))
+        authors_id = set(authors[0])
+        # Convert the name to lowercase for comparison
+        authors_name = set([name.lower() for name in authors[1]])
+        # Save the data as a dictionary and initialize both published and tpc to False
+        # 'published' key indicates whether the paper is written by someone who published before, 'tpc' key indicates
+        # whether it's written by someone who serves in the TPC
+        paper_author.append({'id': paper,
+                             'authors_id': authors_id,
+                             'authors_name': authors_name,
+                             'published': False,
+                             'tpc': False})
 
-    print(f'Among all papers accepted on {orig_conf_name}, there are {"{:.1f}".format(new_author_pct)}% '
-          f'({new_author_count}/{len(current_authors_id)}) authors that have never published on this conference before')
-    print(f'In addition, {"{:.1f}".format(tpc_publish_pct)}% ({len(tpc_publish)}/{len(current_authors_name)}) '
-          f'of all authors who are accepted also work in the TPC, which is {"{:.1f}".format(tpc_accepted_pct)} '
-          f'({len(tpc_publish)}/{len(tpc_names)})% of the TPC members')
+    # Technically only a counter is needed, the T/F indication here is meant for future uses (e.g. GUI expansion)
+    published_count = 0
+    tpc_count = 0
+    both_count = 0
+    for paper in paper_author:
+        # Check whether the paper contains AN author that published before
+        if not paper['authors_id'].isdisjoint(past_authors_id):
+            paper['published'] = True
+            published_count += 1
+        # Check whether the paper contains AN author that served in the TPC
+        if not paper['authors_name'].isdisjoint(tpc_names):
+            paper['tpc'] = True
+            tpc_count += 1
+        if paper['published'] and paper['tpc']:
+            both_count += 1
+
+    # Crunch some numbers - calculate the percentage of the papers that are published by someone who published before
+    # and by someone who serves in the tpc
+    published_pct = published_count / len(papers_id)
+    tpc_pct = tpc_count / len(papers_id)
+    both_pct = both_count / len(papers_id)
+
+    return {'conf_name': orig_conf_name,
+            'conf_year': conf_year,
+            'total_papers': len(papers_id),
+            'published_pct': published_pct,
+            'published_count': published_count,
+            'tpc_pct': tpc_pct,
+            'tpc_count': tpc_count,
+            'both_pct': both_pct,
+            'both_count': both_count}
 
 
 if __name__ == '__main__':
