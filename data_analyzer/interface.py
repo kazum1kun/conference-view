@@ -126,7 +126,7 @@ def conference_report():
                 result = calc_conference_stats(conf_name, conf_year)
                 # Data may be missing for some years, skip them
                 if result is None:
-                    output.write(f'Data for {conf_name} {conf_year} is missing')
+                    output.write(f'Data for {conf_name} {conf_year} is missing\n')
                 else:
                     output.write(f'{result["conf_name"]},{result["total_papers"]},{result["published_count"]},'
                                  f'{result["tpc_count"]},{result["both_count"]}\n')
