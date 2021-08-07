@@ -39,6 +39,7 @@ class ACMSpider(scrapy.Spider):
         # 'https://dl.acm.org/doi/proceedings/10.1145/347059',  # '00
         # 'https://dl.acm.org/doi/proceedings/10.1145/383059',
         # 'https://dl.acm.org/doi/proceedings/10.1145/633025',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/863955',
         # 'https://dl.acm.org/doi/proceedings/10.1145/1015467',
         # 'https://dl.acm.org/doi/proceedings/10.1145/1080091',  # '05
         # 'https://dl.acm.org/doi/proceedings/10.1145/1159913',
@@ -55,7 +56,7 @@ class ACMSpider(scrapy.Spider):
         # 'https://dl.acm.org/doi/proceedings/10.1145/3098822',
         # 'https://dl.acm.org/doi/proceedings/10.1145/3230543',
         # 'https://dl.acm.org/doi/proceedings/10.1145/3341302',
-        # 'https://dl.acm.org/doi/proceedings/10.1145/3387514',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/3387514',  # '20
         #
         # # MOBICOM proceedings
         # 'https://dl.acm.org/doi/proceedings/10.1145/215530',  # '95
@@ -85,11 +86,30 @@ class ACMSpider(scrapy.Spider):
         # 'https://dl.acm.org/doi/proceedings/10.1145/3300061',
         # 'https://dl.acm.org/doi/proceedings/10.1145/3372224',  # '20
         # 'https://dl.acm.org/doi/proceedings/10.1145/3447993',
-        # Missing items
-        'https://dl.acm.org/doi/proceedings/10.1145/863955',
-        'https://dl.acm.org/doi/proceedings/10.1145/2486001',
-        'https://dl.acm.org/doi/proceedings/10.1145/3117811',
 
+        # KDD Proceedings
+        # 'https://dl.acm.org/doi/proceedings/10.1145/312129',
+        'https://dl.acm.org/doi/proceedings/10.1145/347090',  # '00
+        'https://dl.acm.org/doi/proceedings/10.1145/502512',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/775047',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/956750',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/1014052',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/1081870',  # '05
+        # 'https://dl.acm.org/doi/proceedings/10.1145/1150402',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/1281192',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/1401890',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/1557019',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/1835804',  # '10
+        # 'https://dl.acm.org/doi/proceedings/10.1145/2020408',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/2339530',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/2487575',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/2623330',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/2783258',  # '15
+        # 'https://dl.acm.org/doi/proceedings/10.1145/2939672',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/3097983',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/3219819',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/3292500',
+        # 'https://dl.acm.org/doi/proceedings/10.1145/3394486',  # '20
     ]
 
     def parse(self, response, **kwargs):
@@ -124,11 +144,17 @@ class ACMSpider(scrapy.Spider):
                     break
                 see_more_count = new_see_more_count
 
-        # Wait for 3 secs to make sure lazy-loaded contents are rendered fully
-        time.sleep(3)
+        # Wait for lazy-loaded contents to be rendered fully (special rules apply to KDD conferences as they tend
+        # to lump lots of papers together, increasing the load time drastically
+        conf_title = self.driver.title
+        if 'KDD' in conf_title:
+            time.sleep(60)
+        else:
+            time.sleep(3)
 
         # Some papers have some authors hidden due to space limitations. Therefore we need to click on "+" button
         # to see them all
+        # NOTE: disable this for KDD '00 and '01 as this causes some odd exceptions
         author_expand = self.driver.find_elements_by_css_selector('li.count-list a.removed-items-count')
         if author_expand:
             for expand_button in author_expand:
