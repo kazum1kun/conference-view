@@ -56,8 +56,8 @@ class IeeeSpider(scrapy.Spider):
         # be consistent with the year the conference is held
         conf_year = self.driver.find_element_by_css_selector('div.description div span').text.split(':')[1].strip()
         # For consistency we will just going to use "IEEE INFOCOM XXXX" as conference title
-        conf_title = 'IEEE INFOCOM ' + conf_year
-        conf_item = ConferenceItem(conf_title, int(conf_year), [], [])
+        conf_title = 'INFOCOM ' + conf_year
+        conf_item = ConferenceItem(conf_title, int(conf_year), [])
 
         # Pass the fully loaded webpage back and resume normal processing
         self.parse_page(response, conf_item)
