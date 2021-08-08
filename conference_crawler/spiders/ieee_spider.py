@@ -23,7 +23,6 @@ class IeeeSpider(scrapy.Spider):
 
     start_urls = [
         'https://ieeexplore.ieee.org/xpl/conhome/1000359/all-proceedings'
-        # 'https://ieeexplore.ieee.org/xpl/conhome/3539/proceeding?rowsPerPage=100'
     ]
 
     custom_settings = {

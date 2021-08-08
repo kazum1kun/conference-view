@@ -50,6 +50,7 @@ class Author(Base):
     name = Column(String)
     acm_id = Column(Integer)
     ieee_id = Column(Integer)
+    dblp_id = Column(String)
     institutions = relationship("AuthorInstitution")
 
 

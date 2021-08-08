@@ -1,6 +1,7 @@
 from scrapy.crawler import CrawlerProcess
 
 from tpc_crawler.spiders.infocom_tpc_spider import InfocomTpcSpider
+from conference_crawler.spiders.dblp_spider import DblpSpider
 
 
 # Unused, use scrapy crawl xxx instead
@@ -9,11 +10,11 @@ from tpc_crawler.spiders.infocom_tpc_spider import InfocomTpcSpider
 def main():
     process = CrawlerProcess(settings={
         "FEEDS": {
-            "infocom_tpc.json": {"format": "json"},
+            "dblp.json": {"format": "json"},
         },
     })
 
-    process.crawl(InfocomTpcSpider)
+    process.crawl(DblpSpider)
     process.start()
 
 

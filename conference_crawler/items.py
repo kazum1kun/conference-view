@@ -11,6 +11,7 @@ class AuthorItem:
     name: str
     acm_id: int
     ieee_id: int
+    dblp_id: str
     institutions: list[str]
 
 
