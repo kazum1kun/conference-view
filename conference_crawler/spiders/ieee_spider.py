@@ -120,7 +120,7 @@ class IeeeSpider(scrapy.Spider):
                     # Extract author's IEEE ID (i.e. the number part in their profile link)
                     author_ieee_id = author.css('a').xpath('@href').re(r'\d+')[0]
 
-                author_item = AuthorItem(author_name, None, author_ieee_id, None)
+                author_item = AuthorItem(author_name, None, author_ieee_id, None, None)
                 paper_item.authors.append(author_item)
             conf_item.papers.append(paper_item)
 
