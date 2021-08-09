@@ -88,9 +88,9 @@ class KddTpcSpider(scrapy.Spider):
         yield TpcItem(conf_type, conf_year, tpc)
 
     def parse_normal(self, response, year):
-        if year >= 2019:
+        if year >= 2018:
             tpc = response.css('div.container p strong::text').getall()
-        elif year >= 2017:
+        elif year == 2017:
             tpc = response.css('div.entry-content p b::text').getall()
         elif year == 2014:
             tpc = response.xpath('//div[@role="main"]/section[position()>1]//p/strong/text()').getall()
@@ -125,6 +125,9 @@ class KddTpcSpider(scrapy.Spider):
     def parse_comma(self, response, year):
         if year == 2011:
             tpc = response.css('div.introText ul li::text').getall()
+            if not tpc:
+                # The other webpage uses a slightly different layout
+               tpc = response.css('div.content ul li::text').getall()
         elif year == 2006:
             # Filter Awards committee out
             tpc = response.css('td.pcName li::text').getall()[8:]
@@ -151,16 +154,18 @@ class KddTpcSpider(scrapy.Spider):
         return tpc
 
     def parse_comma_reverse(self, response, year):
+        name_expr = re.compile('(.+)-.+$')
         if year == 2005:
             tpc = response.xpath('//tr[@class="contents"]/td/table[position()>2]//li/text()').getall()
+            tpc = [name_expr.findall(name)[0] for name in tpc if '-' in name]
         elif year == 2004:
             tpc = response.xpath('//td[@class="content"]/ul/li/text()').getall()
+            tpc = [name_expr.findall(name.strip())[0] for name in tpc if '-' in name]
         else:
             tpc = []
         # Get rid of the affiliation info first (note that some names contain dash so we want to make sure it doesn't
         # get accidentally removed, thus we want to use a regex for that
-        name_expr = re.compile('(.+)-.+$')
-        tpc = [name_expr.findall(name)[0] for name in tpc]
+
         # All names are Last, First and some has missing/extra whitespaces, hence needing to clean the names first
         # Oddly in 2004 some are mixed up with normal ordering, so a detection is added in such a case
         tpc = [' '.join(name.strip().replace(' ', '').split(',')[::-1]) if ',' in name else name for name in tpc]
