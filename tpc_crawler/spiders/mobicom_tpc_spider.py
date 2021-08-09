@@ -29,6 +29,7 @@ class MobiComTpcSpider(scrapy.Spider):
         'https://sigmobile.org/mobicom/2004/committees.html',
         'https://sigmobile.org/mobicom/2003/committees.html',
         'https://sigmobile.org/mobicom/2000/committee.htm',
+        'https://sigmobile.org/mobicom/1999/pcom.html',
         # Mobicom 2009
         'https://sigmobile.org/mobicom/2009/committees.html',
         # Comma-separated values in older mobicom
@@ -96,7 +97,7 @@ class MobiComTpcSpider(scrapy.Spider):
         if year == 2009:
             tpc = response.xpath('(//tr[@valign="top"])[last()]//text()').getall()
         else:
-            tpc = response.xpath('//center//table//tr/td[1 or 2]//text()').getall()
+            tpc = response.xpath('//center//table//tr/td//text()').getall()
         tpc = [name.split('(')[0].strip() for name in tpc]
         return tpc
 
@@ -108,9 +109,9 @@ class MobiComTpcSpider(scrapy.Spider):
             tpc = response.xpath('//tr/td[2]/p/text()').getall()
         elif year == 1998:
             # Select 3rd and 5th columns in the TPC table
-            tpc = response.xpath('//center/table[3]/tr[2]/td[3 or 5]/text()').getall()
+            tpc = response.xpath('//center/table[3]/tr[2]/td/text()').getall()
         elif year == 1997:
-            tpc = response.xpath('//tr[last()]/td[2 or 4]//text()').getall()
+            tpc = response.xpath('//tr[last()]/td//text()').getall()
         elif year == 1996:
             tpc = response.xpath('//p/text()').getall()
         # Easier to do it manually

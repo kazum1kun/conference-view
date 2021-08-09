@@ -8,6 +8,7 @@ class ConferenceType(str, Enum):
     MOBICOM = 'MobiCom'
     NIPS = 'NIPS'
     NEURIPS = 'NeurIPS'
+    KDD = 'KDD'
 
 
 @dataclass(frozen=True)

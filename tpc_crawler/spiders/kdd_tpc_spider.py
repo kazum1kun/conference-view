@@ -75,17 +75,11 @@ class KddTpcSpider(scrapy.Spider):
         else:
             tpc = []
 
-        # Final cleanup
-        tpc = [name.strip() for name in tpc]
+        # Final cleanup (remove the nickname and whitespaces)
+        tpc = [re.sub(r' \(.*\)', '', name).strip() for name in tpc]
         tpc = [name for name in tpc if name]
 
-        # Account for the name change in 2017
-        if conf_year >= 2017:
-            conf_type = ConferenceType.NEURIPS
-        else:
-            conf_type = ConferenceType.NIPS
-
-        yield TpcItem(conf_type, conf_year, tpc)
+        yield TpcItem(ConferenceType.KDD, conf_year, tpc)
 
     def parse_normal(self, response, year):
         if year >= 2018:
