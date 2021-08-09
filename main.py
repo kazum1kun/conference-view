@@ -1,7 +1,6 @@
 from scrapy.crawler import CrawlerProcess
 
-from conference_crawler.spiders.acm_spider import ACMSpider
-from tpc_crawler.spiders.kdd_tpc_spider import KddTpcSpider
+from tpc_crawler.spiders.infocom_tpc_spider import InfocomTpcSpider
 
 
 # Unused, use scrapy crawl xxx instead
@@ -10,11 +9,11 @@ from tpc_crawler.spiders.kdd_tpc_spider import KddTpcSpider
 def main():
     process = CrawlerProcess(settings={
         "FEEDS": {
-            "kdd_tpc.json": {"format": "json"},
+            "infoconm_tpc.json": {"format": "json"},
         },
     })
 
-    process.crawl(KddTpcSpider)
+    process.crawl(InfocomTpcSpider)
     process.start()
 
 

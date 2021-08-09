@@ -2,7 +2,6 @@ import re
 
 import scrapy
 
-
 from tpc_crawler.items import *
 
 
@@ -103,6 +102,8 @@ class KddTpcSpider(scrapy.Spider):
         if year == 2015:
             # The TPC members are in the 2nd-5th sections
             tpc = response.xpath('//div[@role="main"]/section[position()>1]//p/text()').getall()
+            # Website contains an error, easier to just replace here
+            tpc[4] = 'Arno Siebes'
         elif year == 2012:
             tpc = response.css('div.introText ul li::text').getall()
         elif year == 2008:
@@ -121,7 +122,7 @@ class KddTpcSpider(scrapy.Spider):
             tpc = response.css('div.introText ul li::text').getall()
             if not tpc:
                 # The other webpage uses a slightly different layout
-               tpc = response.css('div.content ul li::text').getall()
+                tpc = response.css('div.content ul li::text').getall()
         elif year == 2006:
             # Filter Awards committee out
             tpc = response.css('td.pcName li::text').getall()[8:]

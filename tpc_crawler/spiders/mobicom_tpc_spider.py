@@ -86,6 +86,7 @@ class MobiComTpcSpider(scrapy.Spider):
             tpc[0] = 'Prathima Agrawal'
         elif year == 2000:
             tpc = response.xpath('//table//table/tr/td[1]//text()').getall()
+            tpc = [name.replace('\r\n', ' ') for name in tpc]
         else:
             tpc = []
 

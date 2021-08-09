@@ -68,7 +68,7 @@ class InfocomTpcSpider(scrapy.Spider):
         # to be removed
         tpc = [name.split('(')[0].strip().replace('\u200b', '') for name in tpc]
         # Remove the empty strings resulting from newline characters
-        tpc = [member for member in tpc if member]
+        tpc = [member for member in tpc if member and ')' not in member]
         return tpc
 
     def parse_2014(self, response, year):

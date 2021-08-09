@@ -2,7 +2,6 @@ import re
 
 import scrapy
 
-
 from tpc_crawler.items import *
 
 
@@ -85,6 +84,7 @@ class NipsTpcSpider(scrapy.Spider):
             # specify the start (so the first '\n' is skipped) and step size
             # Then, remove the first name as we don't want to include the PC chair
             tpc = tpc[1::3][1:]
+            tpc = [name.replace('\n', ' ') for name in tpc]
         elif year == 2005:
             tpc = response.xpath('//main//div[preceding::div/h4[.="NIPS 2005 Program Committee"]]/text()').getall()
             tpc = tpc[3::3]
@@ -106,8 +106,14 @@ class NipsTpcSpider(scrapy.Spider):
             tpc = response.css('div.container div.container div::text').getall()
         elif year >= 2011 or year == 2009:
             tpc = response.xpath('//main//p[last()]/text()').getall()
+            if year == 2012:
+                tpc[-1] = 'Xiaojin Zhu'
         elif year == 2010:
             tpc = response.xpath('//main//p[last() - 2]/text()').getall()
+            # Special processing for odd layouts in 2010 page...
+            tpc = [name.split('(')[0] for name in tpc]
+            tpc = [name for name in tpc if ')' not in name]
+            tpc[-1] = 'Xiaojin Zhu'
         elif year == 2008:
             tpc = response.xpath('//main//p[last()]/text()').getall()[1:]
         elif year == 2007:
