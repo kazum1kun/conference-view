@@ -47,7 +47,7 @@ class KddTpcSpider(scrapy.Spider):
 
         # Table (require postprocessing)
         'https://web.archive.org/web/20110115030359/http://www.kdd.org/kdd2010/organizers_research.shtml',
-        'https://web.archive.org/web/20110115030345/http://www.kdd.org/kdd2010/organizers_industrial.shtml'
+        'https://web.archive.org/web/20110115030345/http://www.kdd.org/kdd2010/organizers_industrial.shtml',
         'https://web.archive.org/web/20110817130757fw_/http://www.kdd.org/kdd/2009/rpc.html',
         'https://web.archive.org/web/20110817130802fw_/http://www.kdd.org/kdd/2009/ipc.html',
 
