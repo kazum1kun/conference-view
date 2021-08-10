@@ -33,7 +33,7 @@ class DblpSpider(scrapy.Spider):
         'https://dblp.org/db/conf/nips/nips1999.html',
         'https://dblp.org/db/conf/nips/nips1998.html',
         'https://dblp.org/db/conf/nips/nips1997.html',
-        'https://dblp.org/db/conf/nips/nips1996.html',
+        'https://dblp.org/db/conf/nips/nipsN1996.html',
         'https://dblp.org/db/conf/nips/nips1995.html',
         'https://dblp.org/db/conf/nips/nips1994.html',
         'https://dblp.org/db/conf/nips/nips1993.html',

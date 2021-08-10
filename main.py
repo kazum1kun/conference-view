@@ -3,7 +3,7 @@ from scrapy.crawler import CrawlerProcess
 from tpc_crawler.spiders.infocom_tpc_spider import InfocomTpcSpider
 
 
-# Unused, use scrapy crawl xxx instead
+# Unused, use scrapy crawl xxx or data_analyzer/interface instead
 
 
 def main():

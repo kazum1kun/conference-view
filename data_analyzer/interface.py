@@ -119,8 +119,12 @@ def conference_report():
     print('\nGenerating report, please wait')
     with open('conference_report.csv', 'w+') as output:
         output.write('conf_name,total_papers,published_count,tpc_count,both_count\n')
-        for conf_name in ['SIGCOMM', 'INFOCOM', 'MOBICOM']:
+        for conf_name in ['SIGCOMM', 'INFOCOM', 'MOBICOM', 'KDD', 'NIPS', 'NeurIPS']:
             for conf_year in range(1985, 2022):
+                # Special rules for NIPS/NeurIPS
+                if (conf_name == 'NIPS' and conf_year >= 2017) or \
+                        (conf_name == 'NeurIPS' and conf_year < 2017):
+                    continue
                 sys.stdout.write(f'\rNow processing {conf_name} {conf_year}')
                 sys.stdout.flush()
                 result = calc_conference_stats(conf_name, conf_year)
@@ -174,7 +178,11 @@ def calc_conference_stats(conf_name, conf_year):
         # Results are in [(author.id, author.name), (...)] format, need to unpack them first (id and names saved as
         # lists to facilitate comparison)
         authors = list(zip(*query.lookup_paper_authors(paper)))
-        authors_id = set(authors[0])
+        try:
+            authors_id = set(authors[0])
+        # Some papers do not have authors listed, skip them
+        except IndexError:
+            continue
         # Convert the name to lowercase for comparison
         authors_name = set([name.lower() for name in authors[1]])
         # Save the data as a dictionary and initialize both published and tpc to False
