@@ -158,6 +158,10 @@ def calc_conference_stats(conf_name, conf_year):
         # Iterate until the end year (1985) is reached
         cy -= 1
 
+        # Special rule for NIPS
+        if (conf_name.lower() == 'neur' or conf_name.lower() == 'neurips') and cy < 2017:
+            conf_name = 'nips'
+
         conf_id = query.lookup_conference_id(conf_name, cy)
 
         if conf_id == -1:
@@ -178,11 +182,10 @@ def calc_conference_stats(conf_name, conf_year):
         # Results are in [(author.id, author.name), (...)] format, need to unpack them first (id and names saved as
         # lists to facilitate comparison)
         authors = list(zip(*query.lookup_paper_authors(paper)))
-        try:
-            authors_id = set(authors[0])
         # Some papers do not have authors listed, skip them
-        except IndexError:
+        if not authors:
             continue
+        authors_id = set(authors[0])
         # Convert the name to lowercase for comparison
         authors_name = set([name.lower() for name in authors[1]])
         # Save the data as a dictionary and initialize both published and tpc to False
@@ -212,9 +215,9 @@ def calc_conference_stats(conf_name, conf_year):
 
     # Crunch some numbers - calculate the percentage of the papers that are published by someone who published before
     # and by someone who serves in the tpc
-    published_pct = published_count / len(papers_id)
-    tpc_pct = tpc_count / len(papers_id)
-    both_pct = both_count / len(papers_id)
+    published_pct = published_count / len(papers_id) * 100
+    tpc_pct = tpc_count / len(papers_id) * 100
+    both_pct = both_count / len(papers_id) * 100
 
     return {'conf_name': orig_conf_name,
             'conf_year': conf_year,
